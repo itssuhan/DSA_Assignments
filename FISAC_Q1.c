@@ -1,147 +1,107 @@
-#include <stdio.h>
-#include <stdlib.h>
-struct Node
+#include<stdio.h>
+#include<stdlib.h>
+struct node
 {
     int data;
-    struct Node *next;
+    struct node *next;
 };
-
-struct Node *insert_rear(int ele, struct Node *first)
+struct node *create(struct node *head)
 {
-    struct Node *ptr;
-    ptr = (struct Node *)malloc(sizeof(struct Node *));
-    ptr->data = ele;
-    if (first == NULL)
+    struct node *temp, *newnode;
+    int n, i;
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
     {
-        ptr->next = NULL;
-        return ptr;
+        newnode = (struct node *)malloc(sizeof(struct node));
+         
+        printf("Enter the data: ");
+        scanf("%d", &newnode->data);
+        newnode->next = NULL;
+        if (head == NULL)
+        {
+            head = newnode;
+            temp = newnode;
+        }
+        else
+        {
+            temp->next = newnode;
+            temp = newnode;
+        }
     }
-    struct Node *temp = first;
-    while(temp->next != NULL)
+    return head;
+}
+struct node *merge(struct node *head1, struct node *head2)
+{
+    struct node *temp1, *temp2;
+    temp1 = head1;
+    temp2 = head2;
+    while (temp1 != NULL && temp2 != NULL)
     {
+        if (temp1->data > temp2->data)
+        {
+            struct node *newnode = (struct node *)malloc(sizeof(struct node));
+            newnode->data = temp2->data;
+            newnode->next = temp1;
+            head1 = newnode;
+            temp1 = head1;
+            temp2 = temp2->next;
+        }
+        else if (temp1->data < temp2->data)
+        {
+            if (temp1->next != NULL)
+            {
+                if (temp1->next->data > temp2->data)
+                {
+                    struct node *newnode = (struct node *)malloc(sizeof(struct node));
+                    newnode->data = temp2->data;
+                    newnode->next = temp1->next;
+                    temp1->next = newnode;
+                    temp2 = temp2->next;
+                }
+                else
+                {
+                    temp1 = temp1->next;
+                }
+            }
+            else
+            {
+                struct node *newnode = (struct node *)malloc(sizeof(struct node));
+                newnode->data = temp2->data;
+                newnode->next = NULL;
+                temp1->next = newnode;
+                temp2 = temp2->next;
+            }
+        }
+    }
+    return head1;
+}
+
+void display(struct node *head)
+{
+    struct node *temp;
+    temp = head;
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
         temp = temp->next;
     }
-    temp->next = ptr;
-    ptr->next = NULL;
-    return first;
-}
-
-struct Node *sort(struct Node *first, struct Node *second)
-{
-
-    struct Node *t1 = second;
-    struct Node *t2 = first;
-    int flag = 0;
-    if (t1->data < t2->data)
-    {
-        struct Node *ptr2;
-        ptr2 = (struct Node *)malloc(sizeof(struct Node *));
-        ptr2->data = t1->data;
-        ptr2->next = t2;
-        first = ptr2;
-        second = second->next;
-    }
-    while (t1->next != NULL)
-    {
-        t1 = t1->next;
-    }
-    while (t2->next != NULL)
-    {
-        t2 = t2->next;
-    }
-    if (t1->data > t2->data)
-    {
-        struct Node *ptr2;
-        ptr2 = (struct Node *)malloc(sizeof(struct Node *));
-        ptr2->data = t1->data;
-        t2->next = ptr2;
-        ptr2->next = NULL;
-        flag = 1;
-    }
-    struct Node *temp;
-    temp = first;
-    do
-    {
-        if (flag == 0)
-        {
-            if (second == NULL)
-            {
-                break;
-            }
-        }
-        else
-        {
-            if (second->next == NULL)
-            {
-                break;
-            }
-        }
-        if (second->data > temp->data && second->data < temp->next->data)
-        {
-
-            struct Node *ptr;
-            ptr = (struct Node *)malloc(sizeof(struct Node *));
-            ptr->data = second->data;
-            ptr->next = temp->next;
-            temp->next = ptr;
-            second = second->next;
-        }
-        else
-        {
-            temp = temp->next;
-        }
-
-    } while ((1));
-
-    return first;
-}
-
-void display(struct Node *first)
-{
-    if (first == NULL)
-    {
-        printf("List is empty\n");
-        exit(0);
-    }
-    printf("Contents of list are\n");
-    while (first != NULL)
-    {
-        printf("%d\n", first->data);
-        first = first->next;
-    }
+    printf("");
 }
 
 int main()
 {
-    struct Node *head1;
-    struct Node *head2;
-
-    head1 = (struct Node *)malloc(sizeof(struct Node *));
-    head2 = (struct Node *)malloc(sizeof(struct Node *));
-    printf("Enter number of elements of List 1\n");
-    int n1, n2, t;
-    scanf("%d", &n1);
-    printf("Enter elements of list1\n");
-    for (int i = 0; i < n1; i++)
-    {
-        scanf("%d", &t);
-        head1 = insert_rear(t, head1);
-    }
-    printf("Enter number of elements of List 2\n");
-    scanf("%d", &n2);
-    printf("Enter elements of list1\n");
-    for (int i = 0; i < n2; i++)
-    {
-        scanf("%d", &t);
-        head2 = insert_rear(t, head2);
-    }
-    struct Node *t1 = head1->next;
-    free(head1);
-    head1 = t1;
-    struct Node *t2 = head2->next;
-    free(head2);
-    head2 = t2;
-    head1 = sort(head1, head2);
+    struct node *head1 = NULL, *head2 = NULL;
+    head1 = create(head1);
+    head2 = create(head2);
+    head1 = merge(head1, head2);
+    printf("The Merged List is \n");
     display(head1);
     return 0;
 }
+
+
+
+
+
+

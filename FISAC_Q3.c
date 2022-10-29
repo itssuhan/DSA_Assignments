@@ -1,73 +1,88 @@
-#include<stdio.h>
-#include<stdlib.h>
-struct Node{
+// Create a singly linked list using appropriate structure definition and generate a list of ‘n’ fibonacci numbers by successively adding the previous two values in the nodes.
+// Sample output :
+// Enter n: 6
+// Generated list: 0->1->1->2->3->-5
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
     int data;
-    struct Node *next;
+    struct node *next;
 };
 
-void display(struct Node *first)
+struct node *create(struct node *head)
 {
-    if(first == NULL)
+    struct node *temp, *newnode;
+    int n, i;
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
     {
-        printf("List is empty\n");
-        exit(0);
+        newnode = (struct node *)malloc(sizeof(struct node));
+        printf("Enter the data: ");
+        scanf("%d", &newnode->data);
+        newnode->next = NULL;
+        if (head == NULL)
+        {
+            head = newnode;
+            temp = newnode;
+        }
+        else
+        {
+            temp->next = newnode;
+            temp = newnode;
+        }
     }
-    printf("Contents of list are\n");
-    while(first != NULL)
-    {
-        printf("%d\n",first->data);
-     first = first->next;
-    }
+    return head;
 }
 
-struct Node *insert_rear(int ele,struct Node *first)
+void display(struct node *head)
 {
-   struct Node *ptr;
-   ptr = (struct Node *)malloc(sizeof(struct Node *));
-   ptr->data = ele;
-   if(first == NULL)
-   {
-    ptr->next = NULL;
-    return ptr;
-   }
-   struct Node *temp = first;;
-   while(temp->next != NULL)
-   {
-    temp = temp->next;
-   }
-   temp->next = ptr;
-   ptr->next = NULL;
-   return first;
+    struct node *temp;
+    temp = head;
+    while (temp != NULL)
+    {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("");
 }
 
-struct Node *fibo(int n,struct Node *head)
+struct node *fibonacci(struct node *head)
 {
-   head = insert_rear(0,head);
-   head = insert_rear(1,head);
-   int count =2,temp;
-   struct Node *temp1 = head;
-   struct Node *temp2 = head->next;
-   while(count!=n)
-   {
-      temp = temp1->data+temp2->data;
-      head = insert_rear(temp,head);
-      count++;
-      temp1=temp2;
-      temp2 = temp2->next;
-   }
-   return head;
+    struct node *temp, *newnode;
+    int n, i, a = 0, b = 1, c;
+    printf("Enter n: ");
+    scanf("%d", &n);
+    for (i = 0; i < n; i++)
+    {
+        newnode = (struct node *)malloc(sizeof(struct node));
+        newnode->data = a;
+        newnode->next = NULL;
+        if (head == NULL)
+        {
+            head = newnode;
+            temp = newnode;
+        }
+        else
+        {
+            temp->next = newnode;
+            temp = newnode;
+        }
+        c = a + b;
+        a = b;
+        b = c;
+    }
+    return head;
 }
 
 int main()
 {
-    struct Node *head;
-    head = (struct Node *)malloc(sizeof(struct Node *));
-    int n;
-    printf("Enter number of terms to be printed\n");
-    scanf("%d",&n);
-    struct Node *t1 = head->next;
-    free(head);
-    head = t1;
-    head = fibo(n,head);
+    struct node *head = NULL;
+    head = fibonacci(head);
+    printf("Generated list: ");
     display(head);
+    return 0;
 }
